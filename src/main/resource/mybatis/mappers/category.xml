@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="category">
+
+<insert id="insertCategory" parameterType="categoryvo">
+	<selectKey keyProperty="no" resultType="Long" order="BEFORE">
+			select category_seq.nextval from dual
+	</selectKey>
+
+<![CDATA[
+
+insert INTO CATEGORY values (#{no }, #{name }, #{des }, sysdate, #{userNo }) 
+
+]]>
+
+</insert>
+
+<select id="ajaxGetCategory" parameterType="Long" resultType="categoryvo">
+<![CDATA[
+
+select c.no, c.name, c.des, to_char(c.reg_date,'yyyy-mm-dd hh:mi:ss') as regDate, c.users_no as userNo, p.pno as postNo
+from category c, (select category_no, count(*) as pno from post group by category_no) p
+where p.CATEGORY_NO (+)= c.no and c.no= #{categoryNo }
+
+]]>
+</select>
+
+<select id="getCategory" resultType="categoryvo">
+<![CDATA[
+
+select c.no, c.name, c.des, to_char(c.reg_date,'yyyy-mm-dd hh:mi:ss') as regDate, c.users_no as userNo, p.pno as postNo
+from category c, (select category_no, count(*) as pno from post group by category_no) p
+where p.CATEGORY_NO (+)= c.no 
+
+]]>
+</select>
+
+<select id="getMainCategory" parameterType="String" resultType="categoryvo">
+<![CDATA[
+
+select c.no, c.name, c.des, to_char(c.reg_date,'yyyy-mm-dd hh:mi:ss') as regDate, c.users_no as userNo, p.pno as postNo
+from category c, (select category_no, count(*) as pno from post group by category_no) p, (select no from users where id = #{id }) b
+where p.CATEGORY_NO (+)= c.no 
+and c.USERS_NO = b.no
+
+]]>
+</select>
+
+<select id="getCategoryName" parameterType="Long" resultType="categoryvo">
+<![CDATA[
+
+select name, no from category where users_no = #{userNo }
+
+]]>
+</select>
+
+<select id="getFristCategoryNo" resultType="Long">
+<![CDATA[
+
+select rownum from (select no from category) where rownum = 1
+
+]]>
+</select>
+
+<delete id="deleteCategory" parameterType="Long">
+<![CDATA[
+delete from category where no = #{no }
+]]>
+</delete>
+
+</mapper>

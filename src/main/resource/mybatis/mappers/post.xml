@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="post">
+
+<insert id="writePost" parameterType="postvo">
+<![CDATA[
+insert INTO POST values (post_seq.nextval, #{title }, #{content }, sysdate, #{categoryNo })
+]]>
+</insert>
+
+<select id="getPost" parameterType="Long" resultType="postvo">
+<![CDATA[
+select no, title, content, to_char(reg_date,'yyyy-mm-dd hh:mi:ss') as regDate from post where category_no = #{no }
+]]>
+</select>
+
+<select id="getPostContent" parameterType="Long" resultType="postvo">
+<![CDATA[
+select content from post where no = #{no }
+]]>
+</select>
+
+
+</mapper>
